@@ -6,8 +6,6 @@ import akka.http.javadsl.model.StatusCodes;
 import akka.stream.Materializer;
 import com.jayway.jsonpath.JsonPath;
 import javaslang.control.Try;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.util.Optional;
@@ -15,8 +13,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class PokemonBuilder {
-
-    private static Logger logger = LoggerFactory.getLogger(PokemonBuilder.class);
 
     public static Optional<Pokemon> buildFrom(String name, Response response) {
         final Optional<String> maybeJson = Optional.of(response)
@@ -48,10 +44,7 @@ public class PokemonBuilder {
                 .map(Optional::get)
                 .map(json ->
                         Optional.of(new Pokemon(name, JsonPath.read(json, "$.abilities[*].ability.name"))))
-                .recover((ex) -> {
-                    logger.error("Error parsing response", ex);
-                    return Optional.empty();
-                }).get();
+                .recover((ex) -> Optional.empty()).get();
     }
 
     private static CompletionStage<String> decodeStringContent(CompletionStage<HttpEntity.Strict> eventual) {

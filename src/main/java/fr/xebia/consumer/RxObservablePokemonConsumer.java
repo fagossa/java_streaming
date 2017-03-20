@@ -18,13 +18,15 @@ public class RxObservablePokemonConsumer {
         this.pokemonRepository = pokemonRepository;
     }
 
-    public void run(String name) {
+    public Observable<Optional<Pokemon>> runUsing(String name) {
+        logger.info("Querying remote service using RX");
         Observable<Optional<Pokemon>> async = pokemonRepository.searchPokemon(name);
         async.subscribe(
                 maybePokemon -> logger.info("onNext: {}", maybePokemon),
                 error -> logger.error("onError: {}", error),
                 () -> logger.info("done!")
         );
+        return async;
     }
 
 }

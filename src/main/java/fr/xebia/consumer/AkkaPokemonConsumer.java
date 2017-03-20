@@ -18,7 +18,7 @@ public class AkkaPokemonConsumer {
         this.pokemonRepository = pokemonRepository;
     }
 
-    public void run(String name) {
+    public CompletionStage<Optional<Pokemon>> runUsing(String name) {
         final CompletionStage<Optional<Pokemon>> stage = pokemonRepository.searchPokemon(name);
         stage.whenComplete((maybePokemon, error) -> {
             if (error == null) {
@@ -28,5 +28,6 @@ public class AkkaPokemonConsumer {
                 logger.error("onError : " + error);
             }
         });
+        return stage;
     }
 }
