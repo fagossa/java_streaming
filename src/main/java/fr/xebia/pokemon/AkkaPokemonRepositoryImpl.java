@@ -21,11 +21,11 @@ public class AkkaPokemonRepositoryImpl implements AkkaPokemonRepository {
 
     @Override
     public CompletionStage<Optional<Pokemon>> searchPokemon(String name) {
-        logger.info("Querying remote service using Akka-Http");
+        logger.info("Searching pokemon called '{}'", name);
         final String url = String.format("http://pokeapi.co/api/v2/pokemon/%s/", name);
         final HttpRequest request = HttpRequest.GET(url);
         return Http.get(materializer.system())
                 .singleRequest(request, materializer)
-                .thenCompose(response -> PokemonBuilder.from(name, response, materializer));
+                .thenCompose(response -> PokemonBuilder.buildFrom(name, response, materializer));
     }
 }

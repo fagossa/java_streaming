@@ -17,6 +17,7 @@ public class RxPokemonRepositoryImpl implements RxPokemonRepository {
 
     @Override
     public Observable<Optional<Pokemon>> searchPokemon(String name) {
+        logger.info("Searching pokemon called '{}'", name);
         return newRxClient
                 .target("http://pokeapi.co/api/v2/pokemon/" + name)
                 .request()

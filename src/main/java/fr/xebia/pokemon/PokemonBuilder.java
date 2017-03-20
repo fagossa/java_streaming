@@ -22,7 +22,7 @@ public class PokemonBuilder {
         return parseContentIntoPokemon(name, maybeJson);
     }
 
-    public static CompletionStage<Optional<Pokemon>> from(String name, HttpResponse response, Materializer materializer) {
+    public static CompletionStage<Optional<Pokemon>> buildFrom(String name, HttpResponse response, Materializer materializer) {
         final Optional<CompletionStage<String>> completionStage = Optional.of(response)
                 .filter(resp -> StatusCodes.OK.equals(resp.status()) || StatusCodes.MOVED_PERMANENTLY.equals(resp.status()))
                 .map(HttpResponse::entity)
