@@ -9,7 +9,7 @@ import rx.Observable;
 
 import java.util.Optional;
 
-public class PokemonRepositoryImpl implements PokemonRepository {
+public class RxPokemonRepositoryImpl implements RxPokemonRepository {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -22,7 +22,7 @@ public class PokemonRepositoryImpl implements PokemonRepository {
                 .request()
                 .rx()
                 .get()
-                .map(response -> Pokemon.buildFrom(name, response))
+                .map(response -> PokemonBuilder.buildFrom(name, response))
                 .onErrorReturn(throwable -> {
                     logger.warn("Error: {}, getting pokemon: {}", throwable.getMessage(), name);
                     return Optional.empty();

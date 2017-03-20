@@ -1,28 +1,28 @@
-package fr.xebia.rx;
+package fr.xebia.consumer;
 
 import fr.xebia.pokemon.Pokemon;
-import fr.xebia.pokemon.PokemonRepository;
+import fr.xebia.pokemon.RxPokemonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 
 import java.util.Optional;
 
-public class ObservablePokemonConsumer {
+public class RxObservablePokemonConsumer {
 
-    private PokemonRepository pokemonRepository;
+    private RxPokemonRepository pokemonRepository;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public ObservablePokemonConsumer(PokemonRepository pokemonRepository) {
+    public RxObservablePokemonConsumer(RxPokemonRepository pokemonRepository) {
         this.pokemonRepository = pokemonRepository;
     }
 
     public void run(String name) {
         Observable<Optional<Pokemon>> async = pokemonRepository.searchPokemon(name);
         async.subscribe(
-                result -> logger.info("onNext : " + result),
-                error -> logger.error("onError : " + error),
+                maybePokemon -> logger.info("onNext: {}", maybePokemon),
+                error -> logger.error("onError: {}", error),
                 () -> logger.info("done!")
         );
     }
