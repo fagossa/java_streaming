@@ -2,8 +2,8 @@ package fr.xebia;
 
 import akka.actor.ActorSystem;
 import akka.stream.ActorMaterializer;
-import fr.xebia.consumer.AkkaPokemonConsumer;
-import fr.xebia.consumer.RxObservablePokemonConsumer;
+import fr.xebia.consumer.AkkaPokemonService;
+import fr.xebia.consumer.RxObservablePokemonService;
 import fr.xebia.pokemon.AkkaPokemonRepositoryImpl;
 import fr.xebia.pokemon.Pokemon;
 import fr.xebia.pokemon.RxPokemonRepositoryImpl;
@@ -14,13 +14,13 @@ import java.io.IOException;
 
 public class Executor {
 
-    private static Logger rxLogger = LoggerFactory.getLogger(RxObservablePokemonConsumer.class);
-    private static Logger akkaLogger = LoggerFactory.getLogger(AkkaPokemonConsumer.class);
+    private static Logger rxLogger = LoggerFactory.getLogger(RxObservablePokemonService.class);
+    private static Logger akkaLogger = LoggerFactory.getLogger(AkkaPokemonService.class);
 
     public static void main(String... args) throws IOException {
         // Rx
-        new RxObservablePokemonConsumer(new RxPokemonRepositoryImpl())
-                .runUsing("pikachu", "bulbasaur")
+        new RxObservablePokemonService(new RxPokemonRepositoryImpl())
+                .fetchPokemons("pikachu", "bulbasaur")
                 .subscribe(
                         maybePokemon -> maybePokemon.stream()
                                 .forEach(e -> rxLogger.info("onNext : {}", e)),
@@ -31,8 +31,8 @@ public class Executor {
         // Akka
         final ActorSystem system = ActorSystem.create();
         final ActorMaterializer materializer = ActorMaterializer.create(system);
-        new AkkaPokemonConsumer(new AkkaPokemonRepositoryImpl(materializer), materializer)
-                .runUsing("pikachu", "bulbasaur")
+        new AkkaPokemonService(new AkkaPokemonRepositoryImpl(materializer), materializer)
+                .fetchPokemons("pikachu", "bulbasaur")
                 .whenComplete((maybePokemon, error) -> {
                     system.shutdown();
                     if (error == null) {

@@ -11,19 +11,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class RxObservablePokemonConsumer {
+public class RxObservablePokemonService {
 
     private RxPokemonRepository pokemonRepository;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public RxObservablePokemonConsumer(RxPokemonRepository pokemonRepository) {
+    public RxObservablePokemonService(RxPokemonRepository pokemonRepository) {
         this.pokemonRepository = pokemonRepository;
     }
 
-    public Observable<List<Pokemon>> runUsing(String... names) {
-        logger.info("Querying remote service using RX");
-
+    public Observable<List<Pokemon>> fetchPokemons(String... names) {
+        logger.info("Querying remote service using RX for {}", names);
         return Observable
                 .from(Arrays.asList(names))
                 .flatMap(name -> pokemonRepository.searchPokemon(name))
